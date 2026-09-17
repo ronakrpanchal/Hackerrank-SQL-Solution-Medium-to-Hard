@@ -1,0 +1,25 @@
+WITH RANKED_TABLE AS (
+    SELECT
+        W.ID,
+        WP.AGE,
+        W.COINS_NEEDED,
+        W.POWER,
+        ROW_NUMBER() OVER (
+            PARTITION BY WP.AGE, W.POWER
+            ORDER BY W.COINS_NEEDED ASC
+        ) AS RN
+    FROM WANDS W
+    JOIN WANDS_PROPERTY WP
+        ON W.CODE = WP.CODE
+    WHERE WP.IS_EVIL = 0
+)
+SELECT
+    ID,
+    AGE,
+    COINS_NEEDED,
+    POWER
+FROM RANKED_TABLE
+WHERE RN = 1
+ORDER BY
+    POWER DESC,
+    AGE DESC;

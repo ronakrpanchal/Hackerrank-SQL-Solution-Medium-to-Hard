@@ -1,0 +1,28 @@
+```sql
+WITH RECURSIVE NUMBERS AS (
+    SELECT 2 AS N
+
+    UNION ALL
+
+    SELECT N + 1
+    FROM NUMBERS
+    WHERE N < 1000
+),
+PRIMES AS (
+    SELECT N
+    FROM NUMBERS N1
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM NUMBERS N2
+        WHERE N2.N < N1.N
+            AND N2.N > 1
+            AND N1.N % N2.N = 0
+    )
+)
+SELECT GROUP_CONCAT(
+    N
+    ORDER BY N
+    SEPARATOR '&'
+)
+FROM PRIMES;
+```
